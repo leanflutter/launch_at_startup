@@ -5,7 +5,7 @@
 [pub-image]: https://img.shields.io/pub/v/launch_at_startup.svg
 [pub-url]: https://pub.dev/packages/launch_at_startup
 
-This plugin allows Flutter **desktop** apps to Auto launch your app on startup / login.
+This plugin allows Flutter **desktop** apps to Auto launch on startup / login.
 
 [![Discord](https://img.shields.io/badge/discord-%237289DA.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/vba8W9SF)
 
@@ -28,6 +28,8 @@ This plugin allows Flutter **desktop** apps to Auto launch your app on startup /
 | Linux | macOS | Windows |
 | :---: | :---: | :-----: |
 |   ➖   |   ✔️   |    ✔️    |
+
+> ⚠️ macOS only supports non-sandbox mode.
 
 ## Quick Start
 
