@@ -27,7 +27,7 @@ This plugin allows Flutter **desktop** apps to Auto launch your app on startup /
 
 | Linux | macOS | Windows |
 | :---: | :---: | :-----: |
-|   ➖   |   ➖   |    ✔️    |
+|   ➖   |   ✔️   |    ✔️    |
 
 ## Quick Start
 

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'app_auto_launcher_impl_macos.dart';
 import 'app_auto_launcher_impl_windows.dart';
 import 'app_auto_launcher.dart';
 
 class LaunchAtStartup {
-  LaunchAtStartup._() {}
+  LaunchAtStartup._();
 
   /// The shared instance of [LaunchAtStartup].
   static final LaunchAtStartup instance = LaunchAtStartup._();
@@ -15,10 +17,17 @@ class LaunchAtStartup {
     required String appName,
     required String appPath,
   }) {
-    _appAutoLauncher = AppAutoLauncherImplWindows(
-      appName: appName,
-      appPath: appPath,
-    );
+    if (Platform.isMacOS) {
+      _appAutoLauncher = AppAutoLauncherImplMacOS(
+        appName: appName,
+        appPath: appPath,
+      );
+    } else if (Platform.isWindows) {
+      _appAutoLauncher = AppAutoLauncherImplWindows(
+        appName: appName,
+        appPath: appPath,
+      );
+    }
   }
 
   /// Sets your app to auto-launch at startup
