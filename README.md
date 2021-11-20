@@ -27,7 +27,7 @@ This plugin allows Flutter **desktop** apps to Auto launch on startup / login.
 
 | Linux | macOS | Windows |
 | :---: | :---: | :-----: |
-|   ➖   |   ✔️   |    ✔️    |
+|   ✔️   |   ✔️   |    ✔️    |
 
 > ⚠️ macOS only supports non-sandbox mode.
 

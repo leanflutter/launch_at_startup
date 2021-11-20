@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'app_auto_launcher_impl_linux.dart';
 import 'app_auto_launcher_impl_macos.dart';
 import 'app_auto_launcher_impl_windows.dart';
 import 'app_auto_launcher.dart';
@@ -17,7 +18,12 @@ class LaunchAtStartup {
     required String appName,
     required String appPath,
   }) {
-    if (Platform.isMacOS) {
+    if (Platform.isLinux) {
+      _appAutoLauncher = AppAutoLauncherImplLinux(
+        appName: appName,
+        appPath: appPath,
+      );
+    } else if (Platform.isMacOS) {
       _appAutoLauncher = AppAutoLauncherImplMacOS(
         appName: appName,
         appPath: appPath,
