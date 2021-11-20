@@ -1,6 +1,6 @@
 PODS:
   - FlutterMacOS (1.0.0)
-  - launch_at_startup (0.0.1):
+  - launch_at_startup (0.1.0):
     - FlutterMacOS
   - package_info_plus_macos (0.0.1):
     - FlutterMacOS
@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
-  launch_at_startup: f6d29e6019ad0dbee68c83432764bfa5deb999b4
+  launch_at_startup: 9b19b44b67ed1328498983c050e1c6a69f2d2279
   package_info_plus_macos: f010621b07802a241d96d01876d6705f15e77c1c
 
 PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
