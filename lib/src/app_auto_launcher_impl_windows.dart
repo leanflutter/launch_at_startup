@@ -1,6 +1,13 @@
-import 'dart:io';
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
+import 'package:win32/win32.dart';
 
 import 'app_auto_launcher.dart';
+
+final _kRegSubKey =
+    r'Software\Microsoft\Windows\CurrentVersion\Run'.toNativeUtf16();
+const _kRegValueMaxLength = 1024;
 
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
   AppAutoLauncherImplWindows({
@@ -8,55 +15,69 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     required String appPath,
   }) : super(appName: appName, appPath: appPath);
 
+  int _regOpenKey() {
+    final phkResult = calloc<HANDLE>();
+    try {
+      RegOpenKeyEx(
+        HKEY_CURRENT_USER,
+        _kRegSubKey,
+        0,
+        KEY_ALL_ACCESS,
+        phkResult,
+      );
+      return phkResult.value;
+    } finally {
+      free(phkResult);
+    }
+  }
+
+  int _regCloseKey(int hKey) {
+    return RegCloseKey(hKey);
+  }
+
   @override
   Future<bool> isEnabled() async {
-    final ProcessResult result = await Process.run(
-      'REG',
-      [
-        'QUERY',
-        'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',
-        '/v',
-        appName
-      ],
+    int hKey = _regOpenKey();
+    final lpData = calloc<BYTE>(_kRegValueMaxLength);
+    final lpcbData = calloc<DWORD>()..value = _kRegValueMaxLength;
+
+    RegQueryValueEx(
+      hKey,
+      appName.toNativeUtf16(),
+      nullptr,
+      nullptr,
+      lpData,
+      lpcbData,
     );
-    return result.stdout.toString().contains(appName);
+    String value = lpData.cast<Utf16>().toDartString();
+
+    free(lpData);
+    free(lpcbData);
+    _regCloseKey(hKey);
+
+    return value.trim().isNotEmpty;
   }
 
   @override
   Future<bool> enable() async {
-    final ProcessResult result = await Process.run(
-      'REG',
-      [
-        'ADD',
-        'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',
-        '/v',
-        appName,
-        '/t',
-        'REG_SZ',
-        '/d',
-        '"$appPath"',
-        '/f'
-      ],
+    int hKey = _regOpenKey();
+    RegSetKeyValue(
+      hKey,
+      ''.toNativeUtf16(),
+      appName.toNativeUtf16(),
+      REG_SZ,
+      appPath.toNativeUtf16(),
+      _kRegValueMaxLength,
     );
-    return result.stdout
-        .toString()
-        .contains('The operation completed successfully.');
+    _regCloseKey(hKey);
+    return true;
   }
 
   @override
   Future<bool> disable() async {
-    final ProcessResult result = await Process.run(
-      'REG',
-      [
-        'DELETE',
-        'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',
-        '/v',
-        appName,
-        '/f'
-      ],
-    );
-    return result.stdout
-        .toString()
-        .contains('The operation completed successfully.');
+    int hKey = _regOpenKey();
+    RegDeleteValue(hKey, appName.toNativeUtf16());
+    _regCloseKey(hKey);
+    return true;
   }
 }
