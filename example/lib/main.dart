@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -10,12 +11,13 @@ import './pages/home.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-  LaunchAtStartup.instance.setup(
-    appName: packageInfo.appName,
-    appPath: Platform.resolvedExecutable,
-  );
+  if (!kIsWeb) {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    LaunchAtStartup.instance.setup(
+      appName: packageInfo.appName,
+      appPath: Platform.resolvedExecutable,
+    );
+  }
 
   runApp(const MyApp());
 }

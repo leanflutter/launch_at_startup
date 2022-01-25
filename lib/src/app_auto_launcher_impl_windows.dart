@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
-import 'package:ffi/ffi.dart';
-import 'package:win32/win32.dart';
+import 'package:ffi/ffi.dart' if (dart.library.html) 'noop_ffi.dart';
+import 'package:win32/win32.dart' if (dart.library.html) 'noop_win32.dart';
 
 import 'app_auto_launcher.dart';
 

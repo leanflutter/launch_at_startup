@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'app_auto_launcher_impl_linux.dart';
 import 'app_auto_launcher_impl_macos.dart';
-import 'app_auto_launcher_impl_windows.dart';
+import 'app_auto_launcher_impl_windows.dart'
+    if (dart.library.html) 'app_auto_launcher_impl_windows_noop.dart';
+import 'app_auto_launcher_impl_noop.dart';
 import 'app_auto_launcher.dart';
 
 class LaunchAtStartup {
@@ -12,23 +16,23 @@ class LaunchAtStartup {
   /// The shared instance of [LaunchAtStartup].
   static final LaunchAtStartup instance = LaunchAtStartup._();
 
-  late AppAutoLauncher _appAutoLauncher;
+  AppAutoLauncher _appAutoLauncher = AppAutoLauncherImplNoop();
 
   void setup({
     required String appName,
     required String appPath,
   }) {
-    if (Platform.isLinux) {
+    if (!kIsWeb && Platform.isLinux) {
       _appAutoLauncher = AppAutoLauncherImplLinux(
         appName: appName,
         appPath: appPath,
       );
-    } else if (Platform.isMacOS) {
+    } else if (!kIsWeb && Platform.isMacOS) {
       _appAutoLauncher = AppAutoLauncherImplMacOS(
         appName: appName,
         appPath: appPath,
       );
-    } else if (Platform.isWindows) {
+    } else if (!kIsWeb && Platform.isWindows) {
       _appAutoLauncher = AppAutoLauncherImplWindows(
         appName: appName,
         appPath: appPath,
