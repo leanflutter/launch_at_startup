@@ -34,6 +34,9 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
   </dict>
 </plist>
 ''';
+    if (!_plistFile.parent.existsSync()) {
+      _plistFile.parent.createSync(recursive: true);
+    }
     _plistFile.writeAsStringSync(contents);
     return true;
   }
