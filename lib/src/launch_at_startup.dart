@@ -48,3 +48,5 @@ class LaunchAtStartup {
 
   Future<bool> isEnabled() => _appAutoLauncher.isEnabled();
 }
+
+final launchAtStartup = LaunchAtStartup.instance;

@@ -45,7 +45,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  launch_at_startup: ^0.1.3
+  launch_at_startup: ^0.1.4
 ```
 
 Or
@@ -71,15 +71,15 @@ void main() async {
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-  LaunchAtStartup.instance.setup(
+  launchAtStartup.setup(
     appName: packageInfo.appName,
     appPath: Platform.resolvedExecutable,
   );
 
   
-  await LaunchAtStartup.instance.enable();
-  await LaunchAtStartup.instance.disable();
-  bool isEnabled = await LaunchAtStartup.instance.isEnabled();
+  await launchAtStartup.enable();
+  await launchAtStartup.disable();
+  bool isEnabled = await launchAtStartup.isEnabled();
 
   runApp(const MyApp());
 }

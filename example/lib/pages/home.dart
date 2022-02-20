@@ -17,17 +17,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   _init() async {
-    _isEnabled = await LaunchAtStartup.instance.isEnabled();
+    _isEnabled = await launchAtStartup.isEnabled();
     setState(() {});
   }
 
   _handleEnable() async {
-    await LaunchAtStartup.instance.enable();
+    await launchAtStartup.enable();
     await _init();
   }
 
   _handleDisable() async {
-    await LaunchAtStartup.instance.disable();
+    await launchAtStartup.disable();
     await _init();
   }
 

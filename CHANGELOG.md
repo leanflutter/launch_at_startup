@@ -1,3 +1,7 @@
+## 0.1.4
+
+- `pubspec.yaml` adds platforms field.
+
 ## 0.1.3
 
 - #3 Fix  No such file or directory error.
