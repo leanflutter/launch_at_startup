@@ -1,3 +1,7 @@
+## 0.1.5
+
+- [linux] Fixed wrong app name when writing .desktop file. #4
+
 ## 0.1.4
 
 - `pubspec.yaml` adds platforms field.
