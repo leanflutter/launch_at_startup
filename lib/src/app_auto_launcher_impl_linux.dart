@@ -21,7 +21,7 @@ class AppAutoLauncherImplLinux extends AppAutoLauncher {
     String contents = '''
 [Desktop Entry]
 Type=Application
-Name=#{appName}
+Name=$appName
 Comment=$appName startup script
 Exec=$appPath
 StartupNotify=false
