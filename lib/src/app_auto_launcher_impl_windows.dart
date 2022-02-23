@@ -66,7 +66,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
       ''.toNativeUtf16(),
       appName.toNativeUtf16(),
       REG_SZ,
-      appPath.toNativeUtf16(),
+      ('"' + appPath + '"').toNativeUtf16(),
       _kRegValueMaxLength,
     );
     _regCloseKey(hKey);
