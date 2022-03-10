@@ -7,13 +7,14 @@ import 'app_auto_launcher.dart';
 
 final _kRegSubKey =
     r'Software\Microsoft\Windows\CurrentVersion\Run'.toNativeUtf16();
-const _kRegValueMaxLength = 1024;
 
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
   AppAutoLauncherImplWindows({
     required String appName,
     required String appPath,
   }) : super(appName: appName, appPath: appPath);
+
+  int get _regValueMaxLength => appPath.codeUnits.length * 2;
 
   int _regOpenKey() {
     final phkResult = calloc<HANDLE>();
@@ -38,8 +39,8 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   @override
   Future<bool> isEnabled() async {
     int hKey = _regOpenKey();
-    final lpData = calloc<BYTE>(_kRegValueMaxLength);
-    final lpcbData = calloc<DWORD>()..value = _kRegValueMaxLength;
+    final lpData = calloc<BYTE>(_regValueMaxLength);
+    final lpcbData = calloc<DWORD>()..value = 1024;
 
     RegQueryValueEx(
       hKey,
@@ -49,25 +50,26 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
       lpData,
       lpcbData,
     );
-    String value = lpData.cast<Utf16>().toDartString();
+    var value = lpData.cast<Utf16>().toDartString();
 
     free(lpData);
     free(lpcbData);
     _regCloseKey(hKey);
 
-    return value.trim().isNotEmpty;
+    return value.isNotEmpty;
   }
 
   @override
   Future<bool> enable() async {
     int hKey = _regOpenKey();
+
     RegSetKeyValue(
       hKey,
       ''.toNativeUtf16(),
       appName.toNativeUtf16(),
       REG_SZ,
-      ('"' + appPath + '"').toNativeUtf16(),
-      _kRegValueMaxLength,
+      appPath.toNativeUtf16(),
+      _regValueMaxLength,
     );
     _regCloseKey(hKey);
     return true;
