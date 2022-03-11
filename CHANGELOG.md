@@ -1,3 +1,7 @@
+## 0.1.6
+
+- [windows] fix: use correct max length of registry key #
+
 ## 0.1.5
 
 - [linux] Fixed wrong app name when writing .desktop file. #4

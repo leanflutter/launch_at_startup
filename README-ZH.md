@@ -45,7 +45,7 @@
 
 ```yaml
 dependencies:
-  launch_at_startup: ^0.1.5
+  launch_at_startup: ^0.1.6
 ```
 
 或
