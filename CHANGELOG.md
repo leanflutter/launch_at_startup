@@ -1,3 +1,7 @@
+## 0.1.7
+
+- [windows] Replace `win32` with `win32_registry`
+
 ## 0.1.6
 
 - [windows] fix: use correct max length of registry key #

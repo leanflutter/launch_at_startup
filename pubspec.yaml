@@ -1,6 +1,6 @@
 name: launch_at_startup
 description: This plugin allows Flutter desktop apps to Auto launch on startup / login.
-version: 0.1.6
+version: 0.1.7
 homepage: https://github.com/leanflutter/launch_at_startup
 
 platforms:
@@ -16,8 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  ffi: ^1.0.0
-  win32: ^2.3.0
+  win32_registry: ^0.1.2
 
 dev_dependencies:
   flutter_test:
