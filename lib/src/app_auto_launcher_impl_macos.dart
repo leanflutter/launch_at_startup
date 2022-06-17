@@ -6,7 +6,8 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
   AppAutoLauncherImplMacOS({
     required String appName,
     required String appPath,
-  }) : super(appName: appName, appPath: appPath);
+    List<String> args = const [],
+  }) : super(appName: appName, appPath: appPath, args: args);
 
   File get _plistFile => File(
       '${Platform.environment['HOME']}/Library/LaunchAgents/$appName.plist');
@@ -28,6 +29,7 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
     <key>ProgramArguments</key>
     <array>
       <string>$appPath</string>
+      ${args.map((e) => '<string>$e</string>').join("\n")}
     </array>
     <key>RunAtLoad</key>
     <true/>

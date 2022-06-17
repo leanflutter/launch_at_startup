@@ -7,7 +7,8 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   AppAutoLauncherImplWindows({
     required String appName,
     required String appPath,
-  }) : super(appName: appName, appPath: appPath);
+    List<String> args = const [],
+  }) : super(appName: appName, appPath: appPath, args: args);
 
   RegistryKey get _regKey => Registry.openPath(
         RegistryHive.currentUser,
@@ -26,7 +27,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     _regKey.createValue(RegistryValue(
       appName,
       RegistryValueType.string,
-      appPath,
+      '$appPath ${args.join(' ')}',
     ));
     return true;
   }
