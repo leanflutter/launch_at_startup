@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import 'app_auto_launcher.dart';
 import 'app_auto_launcher_impl_linux.dart';
 import 'app_auto_launcher_impl_macos.dart';
+import 'app_auto_launcher_impl_noop.dart';
 import 'app_auto_launcher_impl_windows.dart'
     if (dart.library.html) 'app_auto_launcher_impl_windows_noop.dart';
-import 'app_auto_launcher_impl_noop.dart';
-import 'app_auto_launcher.dart';
 
 class LaunchAtStartup {
   LaunchAtStartup._();
@@ -21,6 +21,7 @@ class LaunchAtStartup {
   void setup({
     required String appName,
     required String appPath,
+    List<String> args = const [],
   }) {
     if (!kIsWeb && Platform.isLinux) {
       _appAutoLauncher = AppAutoLauncherImplLinux(
@@ -31,11 +32,13 @@ class LaunchAtStartup {
       _appAutoLauncher = AppAutoLauncherImplMacOS(
         appName: appName,
         appPath: appPath,
+        args: args,
       );
     } else if (!kIsWeb && Platform.isWindows) {
       _appAutoLauncher = AppAutoLauncherImplWindows(
         appName: appName,
         appPath: appPath,
+        args: args,
       );
     }
   }
