@@ -4,11 +4,15 @@ import 'package:win32_registry/win32_registry.dart'
 import 'app_auto_launcher.dart';
 
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
+  late String _registryValue;
+
   AppAutoLauncherImplWindows({
     required String appName,
     required String appPath,
     List<String> args = const [],
-  }) : super(appName: appName, appPath: appPath, args: args);
+  }) : super(appName: appName, appPath: appPath, args: args) {
+    _registryValue = args.isEmpty ? appPath : '$appPath ${args.join(' ')}';
+  }
 
   RegistryKey get _regKey => Registry.openPath(
         RegistryHive.currentUser,
@@ -19,7 +23,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   @override
   Future<bool> isEnabled() async {
     String? value = _regKey.getValueAsString(appName);
-    return value == appPath;
+    return value == _registryValue;
   }
 
   @override
@@ -27,7 +31,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     _regKey.createValue(RegistryValue(
       appName,
       RegistryValueType.string,
-      '$appPath ${args.join(' ')}',
+      _registryValue,
     ));
     return true;
   }
