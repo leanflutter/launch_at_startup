@@ -1,3 +1,7 @@
+## 0.1.8
+
+- [windows] Fix incorrect setting/checking of registry value #10
+
 ## 0.1.7
 
 - [windows] Replace `win32` with `win32_registry`
