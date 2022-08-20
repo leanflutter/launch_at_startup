@@ -1,3 +1,7 @@
+## 0.1.9
+
+- bump win32_registry to 1.0.2 #12
+
 ## 0.1.8
 
 - [windows] Fix incorrect setting/checking of registry value #10
