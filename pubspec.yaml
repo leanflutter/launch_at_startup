@@ -16,7 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  win32_registry: ^0.1.2
+  win32_registry: ^1.0.2
 
 dev_dependencies:
   flutter_test:
