@@ -4,5 +4,6 @@ class AppAutoLauncherImplWindows extends AppAutoLauncherImplNoop {
   AppAutoLauncherImplWindows({
     required String appName,
     required String appPath,
+    List<String> args = const [],
   }) : super();
 }
