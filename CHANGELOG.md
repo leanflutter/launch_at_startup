@@ -1,3 +1,7 @@
+## 0.2.0
+
+- fix: web compile error #14
+
 ## 0.1.9
 
 - bump win32_registry to 1.0.2 #12
