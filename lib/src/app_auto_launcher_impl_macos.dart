@@ -33,6 +33,12 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
     </array>
     <key>RunAtLoad</key>
     <true/>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+    <key>StandardOutPath</key>
+    <string>/dev/null</string>
   </dict>
 </plist>
 ''';
