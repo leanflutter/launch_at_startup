@@ -1,3 +1,7 @@
+## 0.2.1
+
+* feat: add interactive process type to MacOS #16
+
 ## 0.2.0
 
 - fix: web compile error #14
