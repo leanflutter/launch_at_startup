@@ -27,6 +27,7 @@ class LaunchAtStartup {
       _appAutoLauncher = AppAutoLauncherImplLinux(
         appName: appName,
         appPath: appPath,
+        args: args,
       );
     } else if (!kIsWeb && Platform.isMacOS) {
       _appAutoLauncher = AppAutoLauncherImplMacOS(

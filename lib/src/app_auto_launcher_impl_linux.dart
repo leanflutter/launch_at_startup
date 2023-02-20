@@ -6,7 +6,8 @@ class AppAutoLauncherImplLinux extends AppAutoLauncher {
   AppAutoLauncherImplLinux({
     required String appName,
     required String appPath,
-  }) : super(appName: appName, appPath: appPath);
+    List<String> args = const [],
+  }) : super(appName: appName, appPath: appPath, args: args);
 
   File get _desktopFile => File(
       '${Platform.environment['HOME']}/.config/autostart/$appName.desktop');
@@ -23,7 +24,7 @@ class AppAutoLauncherImplLinux extends AppAutoLauncher {
 Type=Application
 Name=$appName
 Comment=$appName startup script
-Exec=$appPath
+Exec=${args.isEmpty ? appPath : '$appPath ${args.join(' ')}'}
 StartupNotify=false
 Terminal=false
 ''';
