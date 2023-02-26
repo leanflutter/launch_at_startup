@@ -1,3 +1,7 @@
+## 0.2.2
+
+* add startup args for linux (#19)
+
 ## 0.2.1
 
 * feat: add interactive process type to MacOS #16
