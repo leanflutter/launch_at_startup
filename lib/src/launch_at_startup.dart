@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-
-import 'app_auto_launcher.dart';
-import 'app_auto_launcher_impl_linux.dart';
-import 'app_auto_launcher_impl_macos.dart';
-import 'app_auto_launcher_impl_noop.dart';
-import 'app_auto_launcher_impl_windows.dart'
+import 'package:launch_at_startup/src/app_auto_launcher.dart';
+import 'package:launch_at_startup/src/app_auto_launcher_impl_linux.dart';
+import 'package:launch_at_startup/src/app_auto_launcher_impl_macos.dart';
+import 'package:launch_at_startup/src/app_auto_launcher_impl_noop.dart';
+import 'package:launch_at_startup/src/app_auto_launcher_impl_windows.dart'
     if (dart.library.html) 'app_auto_launcher_impl_windows_noop.dart';
 
 class LaunchAtStartup {

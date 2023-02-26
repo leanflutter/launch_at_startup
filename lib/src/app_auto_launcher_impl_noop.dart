@@ -1,4 +1,4 @@
-import 'app_auto_launcher.dart';
+import 'package:launch_at_startup/src/app_auto_launcher.dart';
 
 class AppAutoLauncherImplNoop extends AppAutoLauncher {
   AppAutoLauncherImplNoop() : super(appName: '', appPath: '');

@@ -1,11 +1,8 @@
+import 'package:launch_at_startup/src/app_auto_launcher.dart';
 import 'package:win32_registry/win32_registry.dart'
     if (dart.library.html) 'noop.dart';
 
-import 'app_auto_launcher.dart';
-
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
-  late String _registryValue;
-
   AppAutoLauncherImplWindows({
     required String appName,
     required String appPath,
@@ -13,6 +10,8 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   }) : super(appName: appName, appPath: appPath, args: args) {
     _registryValue = args.isEmpty ? appPath : '$appPath ${args.join(' ')}';
   }
+
+  late String _registryValue;
 
   RegistryKey get _regKey => Registry.openPath(
         RegistryHive.currentUser,
