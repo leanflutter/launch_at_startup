@@ -4,16 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('launch_at_startup');
+  final tester = TestDefaultBinaryMessengerBinding.instance;
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    tester.defaultBinaryMessenger.setMockMethodCallHandler(channel,
+        (MethodCall methodCall) async {
       return '42';
     });
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    tester.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
   });
 }
