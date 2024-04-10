@@ -99,7 +99,7 @@ void main() async {
 
 ### Setup
 
-Add platform channel code to your "macos/Runner/MainFlutterWindow.swift" file.
+Add platform channel code to your `macos/Runner/MainFlutterWindow.swift` file.
 
 ```swift
 import Cocoa
@@ -141,7 +141,7 @@ class MainFlutterWindow: NSWindow {
 }
 
 ```
-then open your "macos/" folder in Xcode and do the following:
+then open your `macos/` folder in Xcode and do the following:
 
 > Instructions referenced from ["LaunchAtLogin" package repository](https://github.com/sindresorhus/LaunchAtLogin). Read for more details and FAQ's.
 
