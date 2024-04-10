@@ -1,13 +1,11 @@
 # launch_at_startup
 
-[![pub version][pub-image]][pub-url] [![][discord-image]][discord-url] ![][visits-count-image] 
+[![pub version][pub-image]][pub-url] [![][discord-image]][discord-url] ![][visits-count-image]
 
 [pub-image]: https://img.shields.io/pub/v/launch_at_startup.svg
 [pub-url]: https://pub.dev/packages/launch_at_startup
-
 [discord-image]: https://img.shields.io/discord/884679008049037342.svg
 [discord-url]: https://discord.gg/zPa6EZ2jqb
-
 [visits-count-image]: https://img.shields.io/badge/dynamic/json?label=Visits%20Count&query=value&url=https://api.countapi.xyz/hit/leanflutter.launch_at_startup/visits
 
 This plugin allows Flutter desktop apps to Auto launch on startup / login.
@@ -21,11 +19,16 @@ English | [简体中文](./README-ZH.md)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [launch_at_startup](#launch_at_startup)
+- [launch\_at\_startup](#launch_at_startup)
   - [Platform Support](#platform-support)
   - [Quick Start](#quick-start)
     - [Installation](#installation)
     - [Usage](#usage)
+  - [MacOS Support](#macos-support)
+    - [Setup](#setup)
+    - [Requirements](#requirements)
+    - [Install](#install)
+    - [Usage](#usage-1)
   - [Who's using it?](#whos-using-it)
   - [License](#license)
 
@@ -33,11 +36,11 @@ English | [简体中文](./README-ZH.md)
 
 ## Platform Support
 
-| Linux | macOS | Windows |
+| Linux | macOS* | Windows |
 | :---: | :---: | :-----: |
-|   ✔️   |   ✔️   |    ✔️    |
+|  ✔️   |  ✔️   |   ✔️    |
 
-> ⚠️ macOS only supports non-sandbox mode.
+>*Required macOS support installation instructions below
 
 ## Quick Start
 
@@ -78,7 +81,7 @@ void main() async {
     appPath: Platform.resolvedExecutable,
   );
 
-  
+
   await launchAtStartup.enable();
   await launchAtStartup.disable();
   bool isEnabled = await launchAtStartup.isEnabled();
@@ -91,6 +94,82 @@ void main() async {
 ```
 
 > Please see the example app of this plugin for a full example.
+
+## MacOS Support
+
+### Setup
+
+Add platform channel code to your "macos/Runner/MainFlutterWindow.swift" file.
+
+```swift
+import Cocoa
+import FlutterMacOS
+// Add the LaunchAtLogin module
+import LaunchAtLogin
+//
+
+class MainFlutterWindow: NSWindow {
+  override func awakeFromNib() {
+    let flutterViewController = FlutterViewController.init()
+    let windowFrame = self.frame
+    self.contentViewController = flutterViewController
+    self.setFrame(windowFrame, display: true)
+
+    // Add FlutterMethodChannel platform code
+    FlutterMethodChannel(
+      name: "launch_at_startup", binaryMessenger: flutterViewController.engine.binaryMessenger
+    )
+    .setMethodCallHandler { (_ call: FlutterMethodCall, result: @escaping FlutterResult) in
+      switch call.method {
+      case "launchAtStartupIsEnabled":
+        result(LaunchAtLogin.isEnabled)
+      case "launchAtStartupSetEnabled":
+        if let arguments = call.arguments as? [String: Any] {
+          LaunchAtLogin.isEnabled = arguments["setEnabledValue"] as! Bool
+        }
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+    //
+
+    RegisterGeneratedPlugins(registry: flutterViewController)
+
+    super.awakeFromNib()
+  }
+}
+
+```
+then open your "macos/" folder in Xcode and do the following:
+
+> Instructions referenced from ["LaunchAtLogin" package repository](https://github.com/sindresorhus/LaunchAtLogin). Read for more details and FAQ's.
+
+### Requirements
+
+macOS 10.13+
+
+### Install
+
+Add `https://github.com/sindresorhus/LaunchAtLogin` in the [“Swift Package Manager” tab in Xcode](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
+
+### Usage
+
+**Skip this step if your app targets macOS 13 or later.**
+
+Add a new [“Run Script Phase”](http://stackoverflow.com/a/39633955/64949) **below** (not into) “Copy Bundle Resources” in “Build Phases” with the following:
+
+```sh
+"${BUILT_PRODUCTS_DIR}/LaunchAtLogin_LaunchAtLogin.bundle/Contents/Resources/copy-helper-swiftpm.sh"
+```
+
+And uncheck “Based on dependency analysis”.
+
+The build phase cannot run with "User Script Sandboxing" enabled. With Xcode 15 or newer where it is enabled by default, disable "User Script Sandboxing" in build settings.
+
+*(It needs some extra works to have our script to comply with the build phase sandbox.)*
+*(I would name the run script `Copy “Launch at Login Helper”`)*
+
 
 ## Who's using it?
 
