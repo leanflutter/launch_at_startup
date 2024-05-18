@@ -19,28 +19,27 @@ English | [简体中文](./README-ZH.md)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [launch\_at\_startup](#launch_at_startup)
-  - [Platform Support](#platform-support)
-  - [Quick Start](#quick-start)
-    - [Installation](#installation)
-    - [Usage](#usage)
-  - [MacOS Support](#macos-support)
-    - [Setup](#setup)
-    - [Requirements](#requirements)
-    - [Install](#install)
-    - [Usage](#usage-1)
-  - [Who's using it?](#whos-using-it)
-  - [License](#license)
+- [Platform Support](#platform-support)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+  - [Usage](#usage)
+- [MacOS Support](#macos-support)
+  - [Setup](#setup)
+  - [Requirements](#requirements)
+  - [Install](#install)
+  - [Usage](#usage-1)
+- [Who's using it?](#whos-using-it)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Platform Support
 
-| Linux | macOS* | Windows |
-| :---: | :---: | :-----: |
-|  ✔️   |  ✔️   |   ✔️    |
+| Linux | macOS\* | Windows |
+| :---: | :-----: | :-----: |
+|  ✔️   |   ✔️    |   ✔️    |
 
->*Required macOS support installation instructions below
+> \*Required macOS support installation instructions below
 
 ## Quick Start
 
@@ -79,8 +78,9 @@ void main() async {
   launchAtStartup.setup(
     appName: packageInfo.appName,
     appPath: Platform.resolvedExecutable,
+    // Set packageName parameter to support MSIX.
+    packageName: 'dev.leanflutter.examples.launchatstartupexample',
   );
-
 
   await launchAtStartup.enable();
   await launchAtStartup.disable();
@@ -95,7 +95,7 @@ void main() async {
 
 > Please see the example app of this plugin for a full example.
 
-## MacOS Support
+## macOS Support
 
 ### Setup
 
@@ -141,6 +141,7 @@ class MainFlutterWindow: NSWindow {
 }
 
 ```
+
 then open your `macos/` folder in Xcode and do the following:
 
 > Instructions referenced from ["LaunchAtLogin" package repository](https://github.com/sindresorhus/LaunchAtLogin). Read for more details and FAQ's.
@@ -167,9 +168,8 @@ And uncheck “Based on dependency analysis”.
 
 The build phase cannot run with "User Script Sandboxing" enabled. With Xcode 15 or newer where it is enabled by default, disable "User Script Sandboxing" in build settings.
 
-*(It needs some extra works to have our script to comply with the build phase sandbox.)*
-*(I would name the run script `Copy “Launch at Login Helper”`)*
-
+_(It needs some extra works to have our script to comply with the build phase sandbox.)_
+_(I would name the run script `Copy “Launch at Login Helper”`)_
 
 ## Who's using it?
 

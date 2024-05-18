@@ -1,3 +1,9 @@
+## 0.3.0
+
+* [windows] Add MSIX app support
+* [windows] fix: detect disabled/enabled register (#26)
+* [macos] macOS support API change to allow App Sandbox mode #27
+
 ## 0.2.2
 
 * add startup args for linux (#19)
