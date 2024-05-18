@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:preference_list/preference_list.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,6 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  PackageInfo? _packageInfo;
   bool _isEnabled = false;
 
   @override
@@ -19,23 +24,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   _init() async {
+    _packageInfo = await PackageInfo.fromPlatform();
     _isEnabled = await launchAtStartup.isEnabled();
     setState(() {});
   }
 
   _handleEnable() async {
-    await launchAtStartup.enable();
+    try {
+      await launchAtStartup.enable();
+    } catch (error) {
+      BotToast.showText(text: error.toString());
+    }
     await _init();
   }
 
   _handleDisable() async {
-    await launchAtStartup.disable();
+    try {
+      await launchAtStartup.disable();
+    } catch (error) {
+      BotToast.showText(text: error.toString());
+    }
     await _init();
   }
 
   Widget _buildBody(BuildContext context) {
     return PreferenceList(
       children: <Widget>[
+        PreferenceListSection(
+          children: [
+            PreferenceListItem(
+              title: Text('App name: ${_packageInfo?.appName}'),
+            ),
+            PreferenceListItem(
+              title: Text('App path: ${Platform.resolvedExecutable}'),
+            ),
+            PreferenceListItem(
+              title: Text('Version: ${_packageInfo?.version}'),
+            ),
+            PreferenceListItem(
+              title: Text('Build number: ${_packageInfo?.buildNumber}'),
+            ),
+          ],
+        ),
         PreferenceListSection(
           title: const Text('Methods'),
           children: [

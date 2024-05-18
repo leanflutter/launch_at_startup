@@ -1,8 +1,16 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:launch_at_startup/src/app_auto_launcher.dart';
 import 'package:win32_registry/win32_registry.dart'
     if (dart.library.html) 'noop.dart';
+
+bool isRunningInMsix(String packageName) {
+  final String resolvedExecutable = Platform.resolvedExecutable;
+  final bool isMsix = resolvedExecutable.contains('WindowsApps') &&
+      resolvedExecutable.contains(packageName);
+  return isMsix;
+}
 
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
   AppAutoLauncherImplWindows({
@@ -85,5 +93,58 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     if (key.getValue(value) != null) {
       key.deleteValue(value);
     }
+  }
+}
+
+class AppAutoLauncherImplWindowsMsix extends AppAutoLauncher {
+  AppAutoLauncherImplWindowsMsix({
+    required String appName,
+    required String appPath,
+    required this.packageName,
+    List<String> args = const [],
+  }) : super(appName: appName, appPath: appPath, args: args);
+
+  final String packageName;
+
+  File get _shortcutFile {
+    return File(
+      '${Platform.environment['APPDATA']}\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\$appName.lnk',
+    );
+  }
+
+  @override
+  Future<bool> isEnabled() async {
+    return _shortcutFile.existsSync();
+  }
+
+  @override
+  Future<bool> enable() async {
+    final String script = '''
+    \$TargetPath = "$appPath"
+    \$ShortcutFile = "\$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\$appName.lnk"
+    \$WScriptShell = New-Object -ComObject WScript.Shell
+    \$Shortcut = \$WScriptShell.CreateShortcut(\$ShortcutFile)
+    \$Shortcut.TargetPath = \$TargetPath
+    \$Shortcut.Save()
+  ''';
+    final result = Process.runSync('powershell', ['-Command', script]);
+    if (result.stderr != null && result.stderr!.isNotEmpty) {
+      throw Exception('Failed to create shortcut: ${result.stderr}');
+    }
+    return _shortcutFile.existsSync();
+  }
+
+  @override
+  Future<bool> disable() async {
+    if (_shortcutFile.existsSync()) {
+      final String script = '''
+    Remove-Item -Path "\$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\$appName.lnk"
+  ''';
+      final result = Process.runSync('powershell', ['-Command', script]);
+      if (result.stderr != null && result.stderr!.isNotEmpty) {
+        throw Exception('Failed to delete shortcut: ${result.stderr}');
+      }
+    }
+    return !_shortcutFile.existsSync();
   }
 }

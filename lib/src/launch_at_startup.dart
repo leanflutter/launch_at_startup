@@ -20,6 +20,7 @@ class LaunchAtStartup {
   void setup({
     required String appName,
     required String appPath,
+    String? packageName,
     List<String> args = const [],
   }) {
     if (!kIsWeb && Platform.isLinux) {
@@ -35,6 +36,15 @@ class LaunchAtStartup {
         args: args,
       );
     } else if (!kIsWeb && Platform.isWindows) {
+      if (packageName != null && isRunningInMsix(packageName)) {
+        _appAutoLauncher = AppAutoLauncherImplWindowsMsix(
+          appName: appName,
+          appPath: appPath,
+          packageName: packageName,
+          args: args,
+        );
+        return;
+      }
       _appAutoLauncher = AppAutoLauncherImplWindows(
         appName: appName,
         appPath: appPath,

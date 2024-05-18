@@ -16,6 +16,7 @@ void main() async {
     LaunchAtStartup.instance.setup(
       appName: packageInfo.appName,
       appPath: Platform.resolvedExecutable,
+      packageName: 'dev.leanflutter.examples.launchatstartupexample',
     );
   }
 
