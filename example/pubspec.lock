@@ -118,14 +118,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_lints:
-    dependency: "direct dev"
-    description:
-      name: flutter_lints
-      sha256: "9e8c3858111da373efc5aa341de011d9bd23e2c5c5e0c62bccf32438e192d7b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -231,6 +223,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+  mostly_reasonable_lints:
+    dependency: "direct dev"
+    description:
+      name: mostly_reasonable_lints
+      sha256: c61cc6b211f54188eef15e0ad7c9b00e8c001478ac253a52036ef7391b532b7c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   msix:
     dependency: "direct dev"
     description:
@@ -251,10 +251,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "2c582551839386fa7ddbc7770658be7c0f87f388a4bff72066478f597c34d17f"
+      sha256: b93d8b4d624b4ea19b0a5a208b2d6eff06004bc3ce74c06040b120eeadd00ce0
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "8.0.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -400,10 +400,10 @@ packages:
     dependency: transitive
     description:
       name: win32_registry
-      sha256: "41fd8a189940d8696b1b810efb9abcf60827b6cbfab90b0c43e8439e3a39d85a"
+      sha256: "10589e0d7f4e053f2c61023a31c9ce01146656a70b7b7f0828c0b46d7da2a9bb"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   xml:
     dependency: transitive
     description:

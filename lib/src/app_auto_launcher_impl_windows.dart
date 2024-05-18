@@ -14,10 +14,10 @@ bool isRunningInMsix(String packageName) {
 
 class AppAutoLauncherImplWindows extends AppAutoLauncher {
   AppAutoLauncherImplWindows({
-    required String appName,
+    required super.appName,
     required String appPath,
     List<String> args = const [],
-  }) : super(appName: appName, appPath: appPath, args: args) {
+  }) : super(appPath: appPath, args: args) {
     _registryValue = args.isEmpty ? appPath : '$appPath ${args.join(' ')}';
   }
 
@@ -47,11 +47,13 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   @override
   Future<bool> enable() async {
-    _regKey.createValue(RegistryValue(
-      appName,
-      RegistryValueType.string,
-      _registryValue,
-    ));
+    _regKey.createValue(
+      RegistryValue(
+        appName,
+        RegistryValueType.string,
+        _registryValue,
+      ),
+    );
 
     final bytes = Uint8List(_startupApprovedRegKeyBytesLength);
     // "2" as a first byte in this register means that the autostart is enabled
@@ -98,11 +100,11 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
 class AppAutoLauncherImplWindowsMsix extends AppAutoLauncher {
   AppAutoLauncherImplWindowsMsix({
-    required String appName,
-    required String appPath,
+    required super.appName,
+    required super.appPath,
     required this.packageName,
-    List<String> args = const [],
-  }) : super(appName: appName, appPath: appPath, args: args);
+    super.args,
+  });
 
   final String packageName;
 

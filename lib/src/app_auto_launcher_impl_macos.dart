@@ -5,10 +5,10 @@ import 'package:launch_at_startup/src/app_auto_launcher.dart';
 
 class AppAutoLauncherImplMacOS extends AppAutoLauncher {
   AppAutoLauncherImplMacOS({
-    required String appName,
-    required String appPath,
-    List<String> args = const [],
-  }) : super(appName: appName, appPath: appPath, args: args);
+    required super.appName,
+    required super.appPath,
+    super.args,
+  });
 
   static const platform = MethodChannel('launch_at_startup');
 
@@ -18,7 +18,8 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
         await platform.invokeMethod<bool>('launchAtStartupIsEnabled');
     if (isEnabled == null) {
       throw Exception(
-          'WARNING: AppAutoLauncherImplMacOS.isEnabled null response! platform.invokeMethod<bool>("launchAtStartupIsEnabled") returned a null response when checking if app is set to launch at startup.');
+        'WARNING: AppAutoLauncherImplMacOS.isEnabled null response! platform.invokeMethod<bool>("launchAtStartupIsEnabled") returned a null response when checking if app is set to launch at startup.',
+      );
     } else {
       return isEnabled;
     }
@@ -37,7 +38,9 @@ class AppAutoLauncherImplMacOS extends AppAutoLauncher {
   Future<bool> disable() async {
     if (await isEnabled()) {
       await platform.invokeMethod(
-          'launchAtStartupSetEnabled', {'setEnabledValue': false});
+        'launchAtStartupSetEnabled',
+        {'setEnabledValue': false},
+      );
     }
     return true;
   }
