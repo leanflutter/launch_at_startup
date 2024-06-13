@@ -1,3 +1,7 @@
+## 0.3.1
+
+- fix: web build error.
+
 ## 0.3.0
 
 * [windows] Add MSIX app support
