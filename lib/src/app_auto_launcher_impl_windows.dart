@@ -48,9 +48,8 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   @override
   Future<bool> enable() async {
     _regKey.createValue(
-      RegistryValue(
+      RegistryValue.string(
         appName,
-        RegistryValueType.string,
         _registryValue,
       ),
     );
@@ -60,7 +59,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     bytes[0] = 2;
 
     _startupApprovedRegKey
-        .createValue(RegistryValue(appName, RegistryValueType.binary, bytes));
+        .createValue(RegistryValue.binary(appName, bytes));
 
     return true;
   }
@@ -76,15 +75,13 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   // Odd first byte will prevent the app from autostarting
   // Empty or any other value will allow the app to autostart
   Future<bool> _isStartupApproved() async {
-    final value = _startupApprovedRegKey.getValue(appName);
+    final data = _startupApprovedRegKey.getBinaryValue(appName);
 
-    if (value == null) {
+    if (data == null) {
       return true;
     }
 
-    final data = value.data;
-
-    if (data is! Uint8List || data.isEmpty) {
+    if (data.isEmpty) {
       return true;
     }
 
