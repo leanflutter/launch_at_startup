@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Update plugin to use win32_registry version 2.0.0 #33
+
 ## 0.3.1
 
 - fix: web build error.

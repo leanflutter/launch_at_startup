@@ -40,7 +40,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   @override
   Future<bool> isEnabled() async {
-    String? value = _regKey.getValueAsString(appName);
+    String? value = _regKey.getStringValue(appName);
 
     return value == _registryValue && await _isStartupApproved();
   }
@@ -58,8 +58,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     // "2" as a first byte in this register means that the autostart is enabled
     bytes[0] = 2;
 
-    _startupApprovedRegKey
-        .createValue(RegistryValue.binary(appName, bytes));
+    _startupApprovedRegKey.createValue(RegistryValue.binary(appName, bytes));
 
     return true;
   }
@@ -75,17 +74,17 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   // Odd first byte will prevent the app from autostarting
   // Empty or any other value will allow the app to autostart
   Future<bool> _isStartupApproved() async {
-    final data = _startupApprovedRegKey.getBinaryValue(appName);
+    final value = _startupApprovedRegKey.getBinaryValue(appName);
 
-    if (data == null) {
+    if (value == null) {
       return true;
     }
 
-    if (data.isEmpty) {
+    if (value.isEmpty) {
       return true;
     }
 
-    return data[0].isEven;
+    return value[0].isEven;
   }
 
   void _removeValue(RegistryKey key, String value) {
