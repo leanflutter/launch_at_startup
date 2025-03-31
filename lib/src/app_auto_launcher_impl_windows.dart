@@ -127,6 +127,7 @@ class AppAutoLauncherImplWindowsMsix extends AppAutoLauncher {
     \$WScriptShell = New-Object -ComObject WScript.Shell
     \$Shortcut = \$WScriptShell.CreateShortcut(\$ShortcutFile)
     \$Shortcut.TargetPath = \$TargetPath
+    \$Shortcut.Arguments = "${args.join(' ')}"
     \$Shortcut.Save()
   ''';
     final result = Process.runSync('powershell', ['-Command', script]);
