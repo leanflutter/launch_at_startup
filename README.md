@@ -51,7 +51,7 @@ Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-  launch_at_startup: ^0.3.1
+  launch_at_startup: ^0.5.1
 ```
 
 Or

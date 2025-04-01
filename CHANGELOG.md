@@ -1,3 +1,7 @@
+## 0.5.1
+
+- MSIX support args #37
+
 ## 0.4.0
 
 - Update plugin to use win32_registry version 2.0.0 #33
