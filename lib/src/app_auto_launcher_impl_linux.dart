@@ -10,8 +10,11 @@ class AppAutoLauncherImplLinux extends AppAutoLauncher {
   });
 
   File get _desktopFile {
+    final homePath = Platform.environment.containsKey('SNAP')
+        ? Platform.environment['SNAP_REAL_HOME']
+        : Platform.environment['HOME'];
     return File(
-      '${Platform.environment['HOME']}/.config/autostart/$appName.desktop',
+      '$homePath/.config/autostart/$appName.desktop',
     );
   }
 
