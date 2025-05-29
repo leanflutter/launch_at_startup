@@ -26,6 +26,7 @@ class AppAutoLauncherImplLinux extends AppAutoLauncher {
 [Desktop Entry]
 Type=Application
 Name=$appName
+Icon=$appName
 Comment=$appName startup script
 Exec=${args.isEmpty ? appPath : '$appPath ${args.join(' ')}'}
 StartupNotify=false
