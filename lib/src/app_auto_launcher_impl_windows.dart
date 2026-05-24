@@ -23,42 +23,40 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   late String _registryValue;
 
-  RegistryKey get _regKey => Registry.openPath(
-        RegistryHive.currentUser,
-        path: r'Software\Microsoft\Windows\CurrentVersion\Run',
-        desiredAccessRights: AccessRights.allAccess,
-      );
+  RegistryKey get _regKey => CURRENT_USER.open(
+    r'Software\Microsoft\Windows\CurrentVersion\Run',
+    config: const RegistryOpenConfig(access: RegistryAccess.all),
+  );
 
-  RegistryKey get _startupApprovedRegKey => Registry.openPath(
-        RegistryHive.currentUser,
-        path:
-            r'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run',
-        desiredAccessRights: AccessRights.allAccess,
-      );
+  RegistryKey get _startupApprovedRegKey => CURRENT_USER.open(
+    r'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run',
+    config: const RegistryOpenConfig(access: RegistryAccess.all),
+  );
 
   static const int _startupApprovedRegKeyBytesLength = 12;
 
   @override
   Future<bool> isEnabled() async {
-    String? value = _regKey.getStringValue(appName);
+    String? value = _regKey.getString(appName);
 
     return value == _registryValue && await _isStartupApproved();
   }
 
   @override
   Future<bool> enable() async {
-    _regKey.createValue(
-      RegistryValue.string(
-        appName,
-        _registryValue,
-      ),
+    _regKey.setValue(
+      appName,
+      RegistryValue.string(_registryValue),
     );
 
     final bytes = Uint8List(_startupApprovedRegKeyBytesLength);
     // "2" as a first byte in this register means that the autostart is enabled
     bytes[0] = 2;
 
-    _startupApprovedRegKey.createValue(RegistryValue.binary(appName, bytes));
+    _startupApprovedRegKey.setValue(
+      appName,
+      RegistryValue.binary(bytes),
+    );
 
     return true;
   }
@@ -74,7 +72,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   // Odd first byte will prevent the app from autostarting
   // Empty or any other value will allow the app to autostart
   Future<bool> _isStartupApproved() async {
-    final value = _startupApprovedRegKey.getBinaryValue(appName);
+    final value = _startupApprovedRegKey.getBinary(appName);
 
     if (value == null) {
       return true;
@@ -89,7 +87,7 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   void _removeValue(RegistryKey key, String value) {
     if (key.getValue(value) != null) {
-      key.deleteValue(value);
+      key.removeValue(value);
     }
   }
 }

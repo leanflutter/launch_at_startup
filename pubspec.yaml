@@ -18,10 +18,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  win32_registry: ^2.0.0
+  win32_registry: ^3.0.3
 
 dev_dependencies:
-  dependency_validator: ^3.0.0
+  dependency_validator: ^5.0.5
   # flutter_test:
   #   sdk: flutter
   mostly_reasonable_lints: ^0.1.2
