@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:launch_at_startup/src/app_auto_launcher.dart';
+import 'package:win32/win32.dart'
+    show ERROR_FILE_NOT_FOUND, HRESULT_FROM_WIN32, WindowsException;
 import 'package:win32_registry/win32_registry.dart'
     if (dart.library.html) 'noop.dart';
 
@@ -40,7 +42,17 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   @override
   Future<bool> isEnabled() async {
-    String? value = _regKey.getStringValue(appName);
+    final String? value;
+    try {
+      value = _regKey.getStringValue(appName);
+    } on WindowsException catch (e) {
+      // The Run key may not exist yet on a fresh Windows install where no
+      // application has registered for startup, which means auto-start is
+      // not enabled. Rethrow anything else (for example access denied) so a
+      // genuine failure is not silently masked.
+      if (e.hr != HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) rethrow;
+      return false;
+    }
 
     return value == _registryValue && await _isStartupApproved();
   }
@@ -74,7 +86,16 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
   // Odd first byte will prevent the app from autostarting
   // Empty or any other value will allow the app to autostart
   Future<bool> _isStartupApproved() async {
-    final value = _startupApprovedRegKey.getBinaryValue(appName);
+    final Uint8List? value;
+    try {
+      value = _startupApprovedRegKey.getBinaryValue(appName);
+    } on WindowsException catch (e) {
+      // The StartupApproved\Run key is created lazily and is often absent on
+      // a fresh install; a missing key is treated as approved by the null
+      // check below. Rethrow anything else so a genuine failure surfaces.
+      if (e.hr != HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) rethrow;
+      value = null;
+    }
 
     if (value == null) {
       return true;
