@@ -23,16 +23,21 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   late String _registryValue;
 
+  static const String _runRegistryPath =
+      r'Software\Microsoft\Windows\CurrentVersion\Run';
+
+  static const String _startupApprovedRegistryPath =
+      r'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run';
+
   RegistryKey get _regKey => Registry.openPath(
         RegistryHive.currentUser,
-        path: r'Software\Microsoft\Windows\CurrentVersion\Run',
+        path: _runRegistryPath,
         desiredAccessRights: AccessRights.allAccess,
       );
 
   RegistryKey get _startupApprovedRegKey => Registry.openPath(
         RegistryHive.currentUser,
-        path:
-            r'Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run',
+        path: _startupApprovedRegistryPath,
         desiredAccessRights: AccessRights.allAccess,
       );
 
@@ -47,7 +52,13 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
 
   @override
   Future<bool> enable() async {
-    _regKey.createValue(
+    // openPath (used on the read path) throws when a key does not exist, and
+    // createValue only writes to an already-open handle. On a fresh install
+    // the Run and StartupApproved\Run keys may not exist yet, so create them
+    // first. createKey creates any missing keys along the path and opens an
+    // existing key unchanged.
+    final regKey = Registry.currentUser.createKey(_runRegistryPath);
+    regKey.createValue(
       RegistryValue.string(
         appName,
         _registryValue,
@@ -58,7 +69,10 @@ class AppAutoLauncherImplWindows extends AppAutoLauncher {
     // "2" as a first byte in this register means that the autostart is enabled
     bytes[0] = 2;
 
-    _startupApprovedRegKey.createValue(RegistryValue.binary(appName, bytes));
+    final startupApprovedRegKey = Registry.currentUser.createKey(
+      _startupApprovedRegistryPath,
+    );
+    startupApprovedRegKey.createValue(RegistryValue.binary(appName, bytes));
 
     return true;
   }
