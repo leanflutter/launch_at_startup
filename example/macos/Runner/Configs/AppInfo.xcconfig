@@ -8,7 +8,7 @@
 PRODUCT_NAME = launch_at_startup_example
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = org.leanflutter.plugins.launchAtStartupExample
+PRODUCT_BUNDLE_IDENTIFIER = dev.leanflutter.examples.launchatstartupexample
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2021 org.leanflutter.plugins. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 dev.leanflutter.examples. All rights reserved.

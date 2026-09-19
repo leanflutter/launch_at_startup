@@ -1,3 +1,3 @@
-library launch_at_startup;
+library;
 
-export 'src/launch_at_startup.dart';
+export 'package:nativeapi/nativeapi.dart' show LaunchAtLogin;
