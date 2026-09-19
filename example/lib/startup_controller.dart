@@ -11,10 +11,6 @@ import 'package:launch_at_startup/legacy.dart';
 /// ignores it.
 const kAppName = 'launch_at_startup_example';
 
-/// Only Windows reads this; it selects the MSIX path when the running
-/// executable comes from that package.
-const kPackageName = 'dev.leanflutter.examples.launchatstartupexample';
-
 /// Every `launchAtStartup` call of the 0.5.x compatible API, with the answer
 /// each one gave.
 class StartupController extends ChangeNotifier {
@@ -35,24 +31,10 @@ class StartupController extends ChangeNotifier {
   String get lastEvent => _lastEvent;
   List<String> get log => List<String>.unmodifiable(_log);
 
-  /// Where this platform keeps the entry, so it can be checked outside the app.
-  String get entryLocation {
-    if (Platform.isWindows) {
-      return r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run → '
-          '$kAppName';
-    }
-    if (Platform.isLinux) {
-      final config =
-          Platform.environment['XDG_CONFIG_HOME'] ??
-          '${Platform.environment['HOME']}/.config';
-      return '$config/autostart/$kAppName.desktop';
-    }
-    if (Platform.isMacOS) {
-      return 'SMAppService login item — System Settings ▸ General ▸ '
-          'Login Items';
-    }
-    return 'unsupported platform';
-  }
+  /// Where to look for the entry outside the app, per platform.
+  static const entryLocation =
+      'Windows: the Run registry key (or the Startup folder under MSIX) · '
+      'Linux: ~/.config/autostart · macOS: System Settings ▸ General ▸ Login Items';
 
   String get appPath => Platform.resolvedExecutable;
 
@@ -61,7 +43,6 @@ class StartupController extends ChangeNotifier {
     launchAtStartup.setup(
       appName: kAppName,
       appPath: Platform.resolvedExecutable,
-      packageName: kPackageName,
       args: args,
     );
     _note('setup(args: ${args.isEmpty ? 'none' : args.join(' ')})');

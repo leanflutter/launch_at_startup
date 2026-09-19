@@ -18,13 +18,14 @@ Linux.
   `FlutterMethodChannel` in `MainFlutterWindow.swift` and the run script phase that copied
   the login helper are all gone; the login item is an `SMAppService` registration of the
   app itself.
-* Windows: the registry value is a properly quoted command line, so a path or an argument
-  with a space works. `isEnabled()` no longer reads the `StartupApproved` key, so an entry
-  the user disabled in Task Manager is reported as enabled.
+* Windows: the registry value is a properly quoted command line written through the wide
+  API, so a path, an argument or an app name with a space or a non-ASCII character works.
+  `isEnabled()` answers whether the value exists and is still approved, instead of also
+  comparing it against the current path.
 * Linux: the `.desktop` file follows `$XDG_CONFIG_HOME` and carries
   `X-GNOME-Autostart-enabled` and `Hidden=false`.
-* MSIX is unchanged: with `packageName` set and the app running from `WindowsApps`, the
-  entry is a shortcut in the user's Startup folder.
+* MSIX still gets a shortcut in the user's Startup folder, but nativeapi recognises the
+  package itself, so `setup(packageName:)` is accepted and ignored.
 * `win32_registry` is no longer a dependency.
 * New example on `package:flutter/widgets.dart` alone; the full one is nativeapi's
   [launch_at_login_example](https://github.com/libnativeapi/nativeapi-flutter/tree/main/examples/launch_at_login_example).

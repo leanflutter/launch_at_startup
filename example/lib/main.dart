@@ -191,7 +191,10 @@ class _ShellState extends State<Shell> {
         children: [
           Text('appName: $kAppName', style: palette.mono),
           Text('appPath: ${c.appPath}', style: palette.mono),
-          Text('stored at: ${c.entryLocation}', style: palette.mono),
+          Text(
+            'stored at: ${StartupController.entryLocation}',
+            style: palette.mono,
+          ),
           const SizedBox(height: 6),
           Text(
             'The full native example: $kFullExampleUrl',

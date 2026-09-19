@@ -49,7 +49,7 @@ macOS 不再需要 0.5.x 要求的那套设置——不需要 `LaunchAtLogin` Sw
 
 | 平台 | 机制 |
 | --- | --- |
-| Windows | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`，一个标识符一个值 |
+| Windows | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`，一个标识符一个值；MSIX 包内则是用户启动文件夹里的快捷方式 |
 | Linux | `$XDG_CONFIG_HOME/autostart/<标识符>.desktop`（通常是 `~/.config/autostart`） |
 | macOS | `SMAppService`，显示在「系统设置 ▸ 通用 ▸ 登录项」 |
 
@@ -110,8 +110,9 @@ launchAtLogin.setProgram(Platform.resolvedExecutable, ['--minimized']);
 launchAtLogin.enable();
 ```
 
-macOS 会记录 `setProgram` 的值但不使用它：`SMAppService` 注册的是应用自身的 bundle，
-无法带参数启动任意可执行文件。
+在 macOS 上，`setProgram` 指向当前运行的应用时注册的就是这个应用，不管标识符是什么；参数
+会被记录但永远不会传递，因为 `SMAppService` 只会启动应用 bundle。指向别的可执行文件则
+`enable()` 会失败。
 
 > 本插件的[示例应用](./example)演示的是 0.5.x 兼容 API。完整示例——标识符、显示名、程序、
 > 参数、回读——见 nativeapi 的
@@ -137,8 +138,6 @@ final packageInfo = await PackageInfo.fromPlatform();
 launchAtStartup.setup(
   appName: packageInfo.appName,
   appPath: Platform.resolvedExecutable,
-  // 设置 packageName 以支持 MSIX。
-  packageName: 'dev.leanflutter.examples.launchatstartupexample',
 );
 
 await launchAtStartup.enable();
@@ -156,13 +155,14 @@ final isEnabled = await launchAtStartup.isEnabled();
 - `enable()` 和 `disable()` 返回平台是否接受了这次修改，而不是总返回 `true`。在 macOS 上，
   如果用户在「系统设置 ▸ 通用 ▸ 登录项」里禁用了这个应用，它们返回 `false`，`isEnabled()`
   也会一直是 `false`。
-- Windows：注册表里写的是正确加了引号的命令行，路径或参数中带空格也能用。`isEnabled()`
-  只判断该值是否存在；0.5.x 还会比较它是否等于当前路径、并读取 `StartupApproved` 键，因此
-  用户在任务管理器里禁用过的项现在会被报告为已启用，`enable()` 也不会重新批准它。
+- Windows：注册表里写的是正确加了引号的命令行，且走宽字符 API，路径、参数或应用名里有空格
+  或非 ASCII 字符都没问题。`isEnabled()` 判断该值是否存在且仍被批准；0.5.x 还会比较它是否
+  等于当前路径，所以旧版本从别的路径写下的项，现在会被报告为已启用。
 - Linux：`.desktop` 文件写在 `$XDG_CONFIG_HOME` 指向的位置（0.5.x 总是用 `$HOME/.config`），
   并带上 `X-GNOME-Autostart-enabled` 和 `Hidden=false`。
-- MSIX 没有变化：设置了 `packageName` 且应用从 `WindowsApps` 运行时，自启动项仍然是用户
-  启动文件夹里的快捷方式。
+- MSIX 仍然写用户启动文件夹里的快捷方式，但 nativeapi 自己就能识别出运行在 MSIX 包里，
+  所以 `packageName` 只是被接受并忽略。传不传都行，识别不再依赖可执行文件路径里是否含有
+  你传的那个名字。
 - 在 `setup` 之前调用 `enable`、`disable` 或 `isEnabled`，在所有平台上仍然抛
   `UnsupportedError`。
 
@@ -176,7 +176,7 @@ final isEnabled = await launchAtStartup.isEnabled();
 | `await enable()` / `await disable()` | `launchAtLogin.enable()` / `launchAtLogin.disable()`——同步，返回值就是平台的结果 |
 | `await isEnabled()` | `launchAtLogin.isEnabled` |
 | — | `LaunchAtLogin.isSupported()`、`id`、`displayName`、`setDisplayName`、`executablePath`、`arguments` |
-| `setup(packageName:)`（MSIX） | 未覆盖；MSIX 构建请继续用 `legacy.dart` |
+| `setup(packageName:)`（MSIX） | 不用做什么——`LaunchAtLogin` 自己识别 MSIX 包 |
 
 用着 `LaunchAtLogin` 对象期间要自己持有它：被垃圾回收的包装对象会释放原生句柄。释放句柄
 不会删除自启动项。

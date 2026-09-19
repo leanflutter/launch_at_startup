@@ -49,7 +49,7 @@ phase. Delete them when you upgrade.
 
 | Platform | Mechanism |
 | --- | --- |
-| Windows | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, one value per identifier |
+| Windows | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, one value per identifier — or, inside an MSIX package, a shortcut in the user's Startup folder |
 | Linux | `$XDG_CONFIG_HOME/autostart/<identifier>.desktop` (usually `~/.config/autostart`) |
 | macOS | `SMAppService`, shown in System Settings ▸ General ▸ Login Items |
 
@@ -110,8 +110,9 @@ launchAtLogin.setProgram(Platform.resolvedExecutable, ['--minimized']);
 launchAtLogin.enable();
 ```
 
-`setProgram` is recorded but not used on macOS: `SMAppService` registers the app bundle
-itself, and cannot start an arbitrary executable with arguments.
+On macOS `setProgram` naming the running app registers that app, whatever the identifier
+says; the arguments are recorded but never delivered, because `SMAppService` starts the
+app bundle and nothing else. Naming any other executable there makes `enable()` fail.
 
 > The [example app](./example) of this plugin covers the 0.5.x compatible API. For the
 > full example — identifier, display name, program, arguments, read-back — see nativeapi's
@@ -139,8 +140,6 @@ final packageInfo = await PackageInfo.fromPlatform();
 launchAtStartup.setup(
   appName: packageInfo.appName,
   appPath: Platform.resolvedExecutable,
-  // Set packageName to support MSIX.
-  packageName: 'dev.leanflutter.examples.launchatstartupexample',
 );
 
 await launchAtStartup.enable();
@@ -160,15 +159,16 @@ What differs from 0.5.x:
 - `enable()` and `disable()` answer whether the platform accepted the change instead of
   always answering `true`. On macOS they answer `false` when the user has denied the app
   in System Settings ▸ General ▸ Login Items — `isEnabled()` then stays `false`.
-- Windows: the registry value is now a properly quoted command line, so a path or an
-  argument with a space works. `isEnabled()` answers whether the value exists; 0.5.x also
-  compared it against the current path and read the `StartupApproved` key, so an entry
-  the user disabled in Task Manager is reported as enabled and `enable()` does not
-  re-approve it.
+- Windows: the registry value is now a properly quoted command line written through the
+  wide API, so a path, an argument or an app name with a space or a non-ASCII character
+  works. `isEnabled()` answers whether the value exists and is still approved; 0.5.x also
+  compared the value against the current path, so an entry written by an older version of
+  the app from a different path now reads as enabled.
 - Linux: the `.desktop` file is written where `$XDG_CONFIG_HOME` points (0.5.x always
   used `$HOME/.config`) and carries `X-GNOME-Autostart-enabled` and `Hidden=false`.
-- MSIX is unchanged: with `packageName` set and the app running from `WindowsApps`, the
-  entry is still a shortcut in the user's Startup folder.
+- MSIX still gets a shortcut in the user's Startup folder, but nativeapi recognises the
+  package itself, so `packageName` is accepted and ignored. Pass it or not; the detection
+  no longer depends on the executable path containing the name you passed.
 - Calling `enable`, `disable` or `isEnabled` before `setup` still throws
   `UnsupportedError`, on every platform.
 
@@ -182,7 +182,7 @@ What differs from 0.5.x:
 | `await enable()` / `await disable()` | `launchAtLogin.enable()` / `launchAtLogin.disable()` — synchronous, and the answer is the platform's |
 | `await isEnabled()` | `launchAtLogin.isEnabled` |
 | — | `LaunchAtLogin.isSupported()`, `id`, `displayName`, `setDisplayName`, `executablePath`, `arguments` |
-| `setup(packageName:)` (MSIX) | not covered; keep `legacy.dart` for an MSIX build |
+| `setup(packageName:)` (MSIX) | nothing to do — `LaunchAtLogin` recognises the package itself |
 
 Keep a reference to the `LaunchAtLogin` object while you use it: a wrapper that is
 garbage-collected releases its native handle. Releasing it does not remove the entry.

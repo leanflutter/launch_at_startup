@@ -33,9 +33,4 @@ void main() {
     expect(LaunchAtStartup.instance.disable(), throwsUnsupportedError);
     expect(LaunchAtStartup.instance.isEnabled(), throwsUnsupportedError);
   });
-
-  test('isRunningInMsix looks at the resolved executable', () {
-    // The test runner is not an MSIX install, whatever the package name.
-    expect(isRunningInMsix('dev.example.a'), isFalse);
-  });
 }
