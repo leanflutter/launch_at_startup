@@ -13,7 +13,7 @@ Linux.
   everything in it is `@Deprecated` and will be removed in a later release. The README
   lists the behaviour differences and maps each old call to the native API.
 * **Breaking:** requires Flutter 3.47 / Dart 3.13 and macOS 13, and depends on
-  nativeapi ^0.3.0. CI builds and the publish workflow pin Flutter 3.47.5.
+  nativeapi ^0.3.1. CI builds and the publish workflow pin Flutter 3.47.5.
 * **macOS needs no setup of its own.** The `LaunchAtLogin` Swift package, the
   `FlutterMethodChannel` in `MainFlutterWindow.swift` and the run script phase that copied
   the login helper are all gone; the login item is an `SMAppService` registration of the
